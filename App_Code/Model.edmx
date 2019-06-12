@@ -1,0 +1,332 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="AjedrezDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Carrito">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClienteId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ProductoId" Type="int" Nullable="false" />
+          <Property Name="Cantidad" Type="int" Nullable="false" />
+          <Property Name="FechaCompra" Type="datetime" />
+          <Property Name="IsInCart" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="InformacionUsuario">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GUId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="50" />
+          <Property Name="ApePaterno" Type="nvarchar" MaxLength="50" />
+          <Property Name="ApeMaterno" Type="nvarchar" MaxLength="50" />
+          <Property Name="Direccion" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CodigoPostal" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Noticia">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Titulo" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="Descripcion" Type="text" Nullable="false" />
+          <Property Name="FechaPublicacion" Type="datetime" Nullable="false" />
+          <Property Name="Imagen" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <!--Errores durante la generación:
+advertencia 6002: La tabla o vista 'AjedrezDB.dbo.Noticia1' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
+        <EntityType Name="Noticia1">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Titulo" />
+            <PropertyRef Name="Descripcion" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Titulo" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="Descripcion" Type="text" Nullable="false" />
+          <Property Name="FechaPublicacion" Type="nvarchar" MaxLength="50" />
+          <Property Name="Imagen" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Producto">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TipoId" Type="int" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="100" />
+          <Property Name="Precio" Type="int" />
+          <Property Name="Descripcion" Type="text" />
+          <Property Name="Image" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="TipoProducto">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Carrito_Producto">
+          <End Role="Producto" Type="Self.Producto" Multiplicity="1" />
+          <End Role="Carrito" Type="Self.Carrito" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Producto">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Carrito">
+              <PropertyRef Name="ProductoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Producto_TipoProducto">
+          <End Role="TipoProducto" Type="Self.TipoProducto" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Producto" Type="Self.Producto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TipoProducto">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Producto">
+              <PropertyRef Name="TipoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="AjedrezDBModelStoreContainer">
+          <EntitySet Name="Carrito" EntityType="Self.Carrito" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InformacionUsuario" EntityType="Self.InformacionUsuario" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Noticia" EntityType="Self.Noticia" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Producto" EntityType="Self.Producto" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TipoProducto" EntityType="Self.TipoProducto" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Noticia1" EntityType="Self.Noticia1" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Noticia1].[Id] AS [Id], 
+    [Noticia1].[Titulo] AS [Titulo], 
+    [Noticia1].[Descripcion] AS [Descripcion], 
+    [Noticia1].[FechaPublicacion] AS [FechaPublicacion], 
+    [Noticia1].[Imagen] AS [Imagen]
+    FROM [dbo].[Noticia1] AS [Noticia1]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Carrito_Producto" Association="Self.FK_Carrito_Producto">
+            <End Role="Producto" EntitySet="Producto" />
+            <End Role="Carrito" EntitySet="Carrito" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Producto_TipoProducto" Association="Self.FK_Producto_TipoProducto">
+            <End Role="TipoProducto" EntitySet="TipoProducto" />
+            <End Role="Producto" EntitySet="Producto" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="AjedrezDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Carrito">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClienteId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ProductoId" Type="Int32" Nullable="false" />
+          <Property Name="Cantidad" Type="Int32" Nullable="false" />
+          <Property Name="FechaCompra" Type="DateTime" Precision="3" />
+          <Property Name="IsInCart" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Producto" Relationship="Self.FK_Carrito_Producto" FromRole="Carrito" ToRole="Producto" />
+        </EntityType>
+        <EntityType Name="Producto">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TipoId" Type="Int32" Nullable="false" />
+          <Property Name="Nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Precio" Type="Int32" />
+          <Property Name="Descripcion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Image" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Carritoes" Relationship="Self.FK_Carrito_Producto" FromRole="Producto" ToRole="Carrito" />
+          <NavigationProperty Name="TipoProducto" Relationship="Self.FK_Producto_TipoProducto" FromRole="Producto" ToRole="TipoProducto" />
+        </EntityType>
+        <EntityType Name="TipoProducto">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Productoes" Relationship="Self.FK_Producto_TipoProducto" FromRole="TipoProducto" ToRole="Producto" />
+        </EntityType>
+        <Association Name="FK_Carrito_Producto">
+          <End Role="Producto" Type="Self.Producto" Multiplicity="1" />
+          <End Role="Carrito" Type="Self.Carrito" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Producto">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Carrito">
+              <PropertyRef Name="ProductoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Producto_TipoProducto">
+          <End Role="TipoProducto" Type="Self.TipoProducto" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Producto" Type="Self.Producto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TipoProducto">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Producto">
+              <PropertyRef Name="TipoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="AjedrezDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Carritoes" EntityType="Self.Carrito" />
+          <EntitySet Name="Productoes" EntityType="Self.Producto" />
+          <EntitySet Name="TipoProductoes" EntityType="Self.TipoProducto" />
+          <AssociationSet Name="FK_Carrito_Producto" Association="Self.FK_Carrito_Producto">
+            <End Role="Producto" EntitySet="Productoes" />
+            <End Role="Carrito" EntitySet="Carritoes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Producto_TipoProducto" Association="Self.FK_Producto_TipoProducto">
+            <End Role="TipoProducto" EntitySet="TipoProductoes" />
+            <End Role="Producto" EntitySet="Productoes" />
+          </AssociationSet>
+          <EntitySet Name="InformacionUsuarios" EntityType="AjedrezDBModel.InformacionUsuario" />
+          <EntitySet Name="Noticias" EntityType="AjedrezDBModel.Noticia" />
+          <EntitySet Name="Noticia1" EntityType="AjedrezDBModel.Noticia1" />
+        </EntityContainer>
+        <EntityType Name="InformacionUsuario">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GUId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApePaterno" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApeMaterno" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Direccion" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CodigoPostal" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Noticia">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Titulo" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Descripcion" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="FechaPublicacion" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Imagen" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Noticia1">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Titulo" />
+            <PropertyRef Name="Descripcion" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Titulo" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Descripcion" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="FechaPublicacion" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Imagen" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="AjedrezDBModelStoreContainer" CdmEntityContainer="AjedrezDBEntities">
+          <EntitySetMapping Name="Carritoes">
+            <EntityTypeMapping TypeName="AjedrezDBModel.Carrito">
+              <MappingFragment StoreEntitySet="Carrito">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ClienteId" ColumnName="ClienteId" />
+                <ScalarProperty Name="ProductoId" ColumnName="ProductoId" />
+                <ScalarProperty Name="Cantidad" ColumnName="Cantidad" />
+                <ScalarProperty Name="FechaCompra" ColumnName="FechaCompra" />
+                <ScalarProperty Name="IsInCart" ColumnName="IsInCart" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Productoes">
+            <EntityTypeMapping TypeName="AjedrezDBModel.Producto">
+              <MappingFragment StoreEntitySet="Producto">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="TipoId" ColumnName="TipoId" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Precio" ColumnName="Precio" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TipoProductoes">
+            <EntityTypeMapping TypeName="AjedrezDBModel.TipoProducto">
+              <MappingFragment StoreEntitySet="TipoProducto">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InformacionUsuarios">
+            <EntityTypeMapping TypeName="AjedrezDBModel.InformacionUsuario">
+              <MappingFragment StoreEntitySet="InformacionUsuario">
+                <ScalarProperty Name="CodigoPostal" ColumnName="CodigoPostal" />
+                <ScalarProperty Name="Direccion" ColumnName="Direccion" />
+                <ScalarProperty Name="ApeMaterno" ColumnName="ApeMaterno" />
+                <ScalarProperty Name="ApePaterno" ColumnName="ApePaterno" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="GUId" ColumnName="GUId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Noticias">
+            <EntityTypeMapping TypeName="AjedrezDBModel.Noticia">
+              <MappingFragment StoreEntitySet="Noticia">
+                <ScalarProperty Name="Imagen" ColumnName="Imagen" />
+                <ScalarProperty Name="FechaPublicacion" ColumnName="FechaPublicacion" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="Titulo" ColumnName="Titulo" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Noticia1">
+            <EntityTypeMapping TypeName="AjedrezDBModel.Noticia1">
+              <MappingFragment StoreEntitySet="Noticia1">
+                <ScalarProperty Name="Imagen" ColumnName="Imagen" />
+                <ScalarProperty Name="FechaPublicacion" ColumnName="FechaPublicacion" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="Titulo" ColumnName="Titulo" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
